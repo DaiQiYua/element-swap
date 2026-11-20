@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Element Swap</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- 顶部轻量提示条 -->
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <header class="header">
+      <div class="brand-mark" aria-hidden="true">
+        <!-- 兜底图形：与 assets/icons 同一套几何（PNG 加载成功时被覆盖） -->
+        <svg class="brand-svg" width="30" height="30" viewBox="0 0 32 32" fill="none">
+          <defs>
+            <linearGradient id="esBrandGrad" x1="1" y1="1" x2="31" y2="31" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#4F46E5"></stop>
+              <stop offset="1" stop-color="#06B6D4"></stop>
+            </linearGradient>
+          </defs>
+          <rect x="0.6" y="0.6" width="30.8" height="30.8" rx="7" fill="url(#esBrandGrad)" stroke="rgba(255,255,255,.16)" stroke-width="1.2"></rect>
+          <path d="M9.4 9.6h13" stroke="#fff" stroke-width="2.7" stroke-linecap="round"></path>
+          <path d="M19.4 6.8 22.4 9.6l-3 2.8" stroke="#fff" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M22.6 22.4h-13" stroke="#fff" stroke-width="2.7" stroke-linecap="round" opacity=".8"></path>
+          <path d="M12.6 19.6 9.6 22.4l3 2.8" stroke="#fff" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" opacity=".8"></path>
+        </svg>
+        <img class="brand-img" id="brandImg" src="../assets/icons/icon32.png" alt="" width="30" height="30">
+      </div>
+      <div class="brand-text">
+        <h1 class="brand-name">Element Swap</h1>
+        <p class="brand-sub">本地元素隐藏与视频替换</p>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- 主操作：启动拾取器（全卡唯一视觉焦点） -->
+      <section class="card pick-card">
+        <button type="button" class="pick-btn" id="pickBtn" aria-label="启动元素拾取器">
+          <svg class="pick-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 3.5l6.2 16 2.2-6 6-2.2-14.4-7.8z"></path>
+            <path d="M13.5 13.5L20 20"></path>
+          </svg>
+          <span class="pick-label" id="pickLabel">启动拾取器</span>
+        </button>
+        <div class="pick-foot">
+          <p class="pick-hint" id="pickHint">点击后在页面上点选元素，按 Esc 退出</p>
+          <span class="esc-chip" aria-hidden="true">Esc</span>
+        </div>
+        <p class="pick-unsupported" id="pickUnsupported" hidden>当前页面不支持（浏览器内置页/商店页）</p>
+      </section>
+
+      <!-- 抖音视频流：只在抖音域出现，不需要选元素 -->
+      <section class="card douyin-card" id="douyinCard" hidden aria-labelledby="douyinTitle">
+        <div class="douyin-head">
+          <span class="douyin-title" id="douyinTitle">抖音视频流</span>
+          <span class="douyin-chip" aria-hidden="true">抖音</span>
+        </div>
+        <p class="douyin-sub">在当前抖音页抓取已签名的播放地址，无需选取元素</p>
+        <p class="douyin-tip">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 7.5v5.5"></path>
+            <path d="M12 16.5h.01"></path>
+          </svg>
+          请先在该视频页播放一次，再点下方按钮
+        </p>
+        <button type="button" class="douyin-btn" id="douyinGrabBtn" aria-label="抓取当前页面视频流">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 4v10"></path>
+            <path d="M8.4 10.4 12 14l3.6-3.6"></path>
+            <path d="M5 18h14"></path>
+          </svg>
+          <span id="douyinGrabLabel">抓取当前页面视频流</span>
+        </button>
+        <p class="douyin-error" id="douyinError" hidden role="alert"></p>
+        <div class="douyin-result" id="douyinResult" hidden>
+          <p class="douyin-source" id="douyinSource">已抓到 · 来源：—</p>
+          <!-- 两行仅用于核对；复制只有一个按钮：分离流时一次复制两条（换行分隔） -->
+          <div class="douyin-urls">
+            <div class="douyin-row" id="douyinRowVideo">
+              <code class="douyin-url" id="douyinUrl"></code>
+              <button type="button" class="douyin-act douyin-copy" id="douyinCopyBtn" aria-label="复制抓到的视频地址">复制</button>
+            </div>
+            <div class="douyin-row" id="douyinRowAudio" hidden>
+              <code class="douyin-url" id="douyinAudio"></code>
+            </div>
+          </div>
+          <div class="douyin-actions">
+            <button type="button" class="douyin-act douyin-act--primary" id="douyinApplyBtn" aria-label="用该地址替换本页主视频">替换本页主视频</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 保存粒度 -->
+      <section class="card scope-card">
+        <div class="scope-head">
+          <span class="scope-title">保存粒度</span>
+          <span class="scope-state" id="scopeState">当前域名</span>
+        </div>
+        <div class="segmented" id="scopeSwitch" role="radiogroup" aria-label="规则保存粒度">
+          <button type="button" class="seg-btn is-active" role="radio" data-scope="domain" aria-checked="true" aria-label="保存到当前域名，该网站所有页面生效">当前域名</button>
+          <button type="button" class="seg-btn" role="radio" data-scope="url" aria-checked="false" aria-label="保存到当前网址，仅本页生效">当前网址</button>
+        </div>
+        <p class="scope-note">当前域名：该网站所有页面生效；当前网址：仅本页生效</p>
+      </section>
+
+      <!-- 规则列表 -->
+      <section class="rules" aria-labelledby="rulesTitle">
+        <div class="rules-head">
+          <h2 class="rules-title" id="rulesTitle">本站生效规则 (0)</h2>
+          <span class="rules-host" id="rulesHost"></span>
+        </div>
+        <ul class="rule-list" id="ruleList" aria-label="本站生效规则列表"></ul>
+        <div class="empty" id="emptyState" hidden>
+          <svg class="empty-art" width="92" height="62" viewBox="0 0 92 62" fill="none" aria-hidden="true">
+            <!-- 页面窗口（hairline + 极浅底色，白底可见但不抢视线） -->
+            <rect x="6.75" y="6.75" width="78.5" height="44.5" rx="8" fill="#f7f8fa" stroke="rgba(16,24,40,.14)" stroke-width="1.5"></rect>
+            <path d="M7.5 18.5h77" stroke="rgba(16,24,40,.08)" stroke-width="1.4"></path>
+            <circle cx="13.6" cy="12.6" r="1.2" fill="rgba(16,24,40,.20)"></circle>
+            <circle cx="18.2" cy="12.6" r="1.2" fill="rgba(16,24,40,.12)"></circle>
+            <!-- 页面内容（极轻） -->
+            <rect x="13" y="25" width="23" height="4" rx="2" fill="rgba(16,24,40,.10)"></rect>
+            <rect x="13" y="33.5" width="32" height="4" rx="2" fill="rgba(16,24,40,.07)"></rect>
+            <rect x="13" y="42" width="17" height="4" rx="2" fill="rgba(16,24,40,.05)"></rect>
+            <!-- 选中框：全图唯一强调色 -->
+            <rect x="41.5" y="22.5" width="28" height="26" rx="5.5" fill="rgba(79,70,229,.06)" stroke="rgba(79,70,229,.45)" stroke-width="1.4" stroke-dasharray="4 3"></rect>
+            <rect x="39.9" y="20.9" width="3.2" height="3.2" rx="1" fill="#ffffff" stroke="rgba(79,70,229,.85)" stroke-width="1.1"></rect>
+            <rect x="67.9" y="20.9" width="3.2" height="3.2" rx="1" fill="#ffffff" stroke="rgba(79,70,229,.85)" stroke-width="1.1"></rect>
+            <rect x="39.9" y="47.9" width="3.2" height="3.2" rx="1" fill="#ffffff" stroke="rgba(79,70,229,.85)" stroke-width="1.1"></rect>
+            <rect x="67.9" y="47.9" width="3.2" height="3.2" rx="1" fill="#ffffff" stroke="rgba(79,70,229,.85)" stroke-width="1.1"></rect>
+            <!-- 拾取指针 -->
+            <path d="M60 38.5v13.5l3.4-3.3 2.2 4.8 2.4-1.1-2.1-4.7h4.7z" fill="#4f46e5" stroke="rgba(255,255,255,.92)" stroke-width="1.1" stroke-linejoin="round"></path>
+          </svg>
+          <p class="empty-text" id="emptyText">还没有修改规则，点击上方启动拾取器开始</p>
+        </div>
+        <!-- 旧版 kind='image'|'embed' 规则不展示、不计数，仅一行极轻提示 -->
+        <p class="rules-ignored" id="rulesIgnored" hidden></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <button type="button" class="danger-btn" id="clearBtn" aria-label="清除本站全部修改">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 7h16"></path>
+          <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path>
+          <path d="M6.5 7l.8 11.2A2 2 0 0 0 9.3 20h5.4a2 2 0 0 0 2-1.8L17.5 7"></path>
+        </svg>
+        <span class="danger-label" id="clearLabel">清除本站全部修改</span>
+      </button>
+      <p class="privacy" id="privacyNote">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3l7 3v6c0 4.2-2.9 7.4-7 9-4.1-1.6-7-4.8-7-9V6l7-3z"></path>
+          <path d="M9.2 12.2l2 2 3.6-3.9"></path>
+        </svg>
+        所有规则仅保存在本机浏览器，不会上传
+      </p>
+      <div class="meta">版本 <span id="appVersion">—</span></div>
+    </footer>
+  </div>
+
+  <script src="../shared/es-shared.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

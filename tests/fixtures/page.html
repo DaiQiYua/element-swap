@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Element Swap E2E Fixture</title>
+  <style>
+    body { margin: 0; padding: 16px; background: #ffffff; color: #111827; font: 400 14px/1.5 system-ui, "Microsoft YaHei", sans-serif; }
+    h1 { margin: 0 0 12px; font-size: 20px; }
+    #ad-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 64px;
+      margin-bottom: 12px;
+      background: #fee2e2;
+      color: #991b1b;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    section { margin: 12px 0; }
+    img#hero { display: block; width: 320px; height: 180px; background: #eef2ff; }
+    video#movie, iframe#player { display: block; background: #0f172a; }
+    a#link { display: inline-block; padding: 8px 14px; border-radius: 6px; background: #eef2ff; color: #4338ca; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1 id="title">Element Swap E2E Fixture</h1>
+
+  <!-- 用例：hide -->
+  <div id="ad-banner">AD BANNER 广告位</div>
+
+  <!-- 用例：image / video（跨类型替换） -->
+  <section><img id="hero" src="/img/orig.png" width="320" height="180" alt="hero"></section>
+
+  <!-- 用例：video（原地替换 src） -->
+  <section><video id="movie" src="/video/orig.mp4" controls width="320"></video></section>
+
+  <!-- 占位 iframe，保证页面结构稳定 -->
+  <section><iframe id="player" src="about:blank" width="320" height="180" title="player"></iframe></section>
+
+  <!-- 用例：embed -->
+  <section><a id="link" href="/embed.html">普通元素（链接）</a></section>
+</body>
+</html>

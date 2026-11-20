@@ -1,0 +1,190 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.bilibili.com/"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": [
+        "bilivideo.com"
+      ],
+      "resourceTypes": [
+        "media",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.bilibili.com/"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": [
+        "bilivideo.cn"
+      ],
+      "resourceTypes": [
+        "media",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.bilibili.com/"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": [
+        "mountaintoys.cn"
+      ],
+      "resourceTypes": [
+        "media",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.douyin.com/"
+        },
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://www.douyin.com"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": [
+        "douyinvod.com"
+      ],
+      "resourceTypes": [
+        "media",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.douyin.com/"
+        },
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://www.douyin.com"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": [
+        "byteicdn.com"
+      ],
+      "resourceTypes": [
+        "media",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.douyin.com/"
+        },
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://www.douyin.com"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": [
+        "zjcdn.com"
+      ],
+      "resourceTypes": [
+        "media",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://www.douyin.com/"
+        },
+        {
+          "header": "origin",
+          "operation": "set",
+          "value": "https://www.douyin.com"
+        }
+      ]
+    },
+    "condition": {
+      "requestDomains": [
+        "douyinpic.com"
+      ],
+      "resourceTypes": [
+        "media",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  }
+]

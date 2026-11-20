@@ -1,0 +1,15 @@
+# Chrome 加载未打包扩展时生成的索引目录（每台机器不同，不应入库）
+_metadata/
+
+# 打包产物：用 GitHub Releases 分发，不进版本库
+dist/
+
+# 测试夹具里的二进制资源：tests/lib/assets.mjs 在跑测试时自动生成
+tests/fixtures/img/
+tests/fixtures/video/
+
+# 常规忽略
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
